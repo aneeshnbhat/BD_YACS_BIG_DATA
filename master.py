@@ -225,6 +225,7 @@ def job_assign(job_q,joblist):
             while(result != 'no_map'):
                 if(result == 'wait'):
                     time.sleep(1)
+                    #pass
                 else:
                     result = json.loads(result)
                     dtask[result['task_id']] = time.time()
@@ -294,15 +295,13 @@ def job_update(job_q,joblist):
         result = schedule_reducer(scheduler_type)
         if(result=='wait'):
             time.sleep(1)
+            #pass
         else:
-            while(result != 'no_reduce'):
-                if(result == 'wait'):
-                    time.sleep(1)
-                else:
-                    result = json.loads(result)
-                    dtask[result['task_id']] = time.time()
-                    job_sockets[result['id']].send(json.dumps(result).encode())
-                    job_sockets[result['id']].recv(100)
+            while(result != 'no_reduce' and result != 'wait'):
+                result = json.loads(result)
+                dtask[result['task_id']] = time.time()
+                job_sockets[result['id']].send(json.dumps(result).encode())
+                job_sockets[result['id']].recv(100)
                 result = schedule_reducer(scheduler_type)
 
 q = Queue()
