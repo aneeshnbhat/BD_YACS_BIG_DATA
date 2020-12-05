@@ -222,16 +222,12 @@ def job_assign(job_q,joblist):
         if(result == 'wait'):
             time.sleep(1)
         else:
-            while(result != 'no_map'):
-                if(result == 'wait'):
-                    time.sleep(1)
-                    #pass
-                else:
-                    result = json.loads(result)
-                    dtask[result['task_id']] = time.time()
+            while(result != 'no_map' and result != 'wait'):
+                result = json.loads(result)
+                dtask[result['task_id']] = time.time()
 
-                    job_sockets[result['id']].send(json.dumps(result).encode())
-                    job_sockets[result['id']].recv(100)
+                job_sockets[result['id']].send(json.dumps(result).encode())
+                job_sockets[result['id']].recv(100)
                 result = schedule_mapper(scheduler_type)
 
 def job_update(job_q,joblist):
